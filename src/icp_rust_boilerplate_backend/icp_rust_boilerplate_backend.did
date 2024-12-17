@@ -1,0 +1,106 @@
+type Campaign = record {
+  id : nat64;
+  name : text;
+  description : text;
+  created_at : nat64;
+};
+type CampaignPayload = record { name : text; description : text };
+type Donation = record {
+  id : nat64;
+  created_at : nat64;
+  donor_name : text;
+  amount : nat64;
+  campaign_id : nat64;
+};
+type DonationPayload = record {
+  donor_name : text;
+  amount : nat64;
+  campaign_id : nat64;
+};
+type Expense = record {
+  id : nat64;
+  description : text;
+  created_at : nat64;
+  amount : nat64;
+  campaign_id : nat64;
+};
+type ExpensePayload = record {
+  description : text;
+  amount : nat64;
+  campaign_id : nat64;
+};
+type Message = variant {
+  Error : text;
+  InvalidPayload : text;
+  NotFound : text;
+  Success : text;
+  UnAuthorized : text;
+};
+type MessagePayload = record {
+  content : text;
+  sender : text;
+  campaign_id : nat64;
+};
+type Result = variant { Ok : Campaign; Err : Message };
+type Result_1 = variant { Ok : Donation; Err : Message };
+type Result_10 = variant { Ok : vec VoterOutreach; Err : Message };
+type Result_11 = variant { Ok : SecureMessage; Err : Message };
+type Result_2 = variant { Ok : Expense; Err : Message };
+type Result_3 = variant { Ok : User; Err : Message };
+type Result_4 = variant { Ok : VoterOutreach; Err : Message };
+type Result_5 = variant { Ok : vec Campaign; Err : Message };
+type Result_6 = variant { Ok : vec Donation; Err : Message };
+type Result_7 = variant { Ok : vec Expense; Err : Message };
+type Result_8 = variant { Ok : vec SecureMessage; Err : Message };
+type Result_9 = variant { Ok : vec User; Err : Message };
+type SecureMessage = record {
+  id : nat64;
+  content : text;
+  created_at : nat64;
+  sender : text;
+  campaign_id : nat64;
+};
+type UpdateCampaignPayload = record {
+  id : nat64;
+  name : opt text;
+  description : opt text;
+};
+type User = record {
+  id : nat64;
+  username : text;
+  role : UserRole;
+  created_at : nat64;
+};
+type UserPayload = record { username : text; role : UserRole };
+type UserRole = variant { CampaignManager; Donor; Admin };
+type VoterOutreach = record {
+  id : nat64;
+  status : text;
+  date : nat64;
+  created_at : nat64;
+  campaign_id : nat64;
+  activity : text;
+};
+type VoterOutreachPayload = record {
+  status : text;
+  date : nat64;
+  campaign_id : nat64;
+  activity : text;
+};
+service : {
+  create_campaign : (CampaignPayload, UserPayload) -> (Result);
+  create_donation : (DonationPayload, UserPayload) -> (Result_1);
+  create_expense : (ExpensePayload, UserPayload) -> (Result_2);
+  create_user : (UserPayload) -> (Result_3);
+  create_voter_outreach : (VoterOutreachPayload) -> (Result_4);
+  get_campaign_by_id : (nat64) -> (Result) query;
+  get_campaigns : () -> (Result_5) query;
+  get_donations : (nat64) -> (Result_6) query;
+  get_expenses : (nat64) -> (Result_7) query;
+  get_messages : (nat64) -> (Result_8) query;
+  get_user_by_id : (nat64) -> (Result_3) query;
+  get_users : () -> (Result_9) query;
+  get_voter_outreach : (nat64) -> (Result_10) query;
+  send_message_to_campaign : (MessagePayload) -> (Result_11);
+  update_campaign : (UpdateCampaignPayload) -> (Result);
+}
